@@ -1,0 +1,14 @@
+CREATE QUERY topSkillsPerSalaryRange(Vertex<Salary_Range> salaryRange) FOR GRAPH JobGraph {
+  SumAccum<INT> @connectedJobs;
+
+  Seed = {salaryRange};
+  
+  Jobs = SELECT tgt FROM Seed:s - (JOB_OPTION_SALARY_RANGE:e) - Job_Option:tgt;
+
+  Res = SELECT tgt FROM Jobs:s - (JOB_OPTION_SKILL:e) - Skill:tgt
+        ACCUM tgt.@connectedJobs+=1
+        ORDER BY tgt.@connectedJobs
+        LIMIT 5;
+
+  PRINT Res;
+}

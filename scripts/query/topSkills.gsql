@@ -1,0 +1,13 @@
+
+CREATE QUERY topSkills () FOR GRAPH JobGraph {
+  SumAccum<INT> @connectedJobs;
+
+  Seed = {Job_Option.*};
+
+  Res = SELECT tgt FROM Seed:s - (JOB_OPTION_SKILL:e) - Skill:tgt
+        ACCUM tgt.@connectedJobs+=1
+        ORDER BY tgt.@connectedJobs DESC
+        LIMIT 5;
+
+  PRINT Res;
+}
